@@ -5,9 +5,6 @@ import { JournalOutlet, JournalRoutes } from "../journal/routes";
 
 import { ErrorPage } from "./ErrorPage";
 
-// import { Navigate } from "react-router-dom";
-
-
 const routesConfig = createBrowserRouter([
     {
         path: "/auth/*",
