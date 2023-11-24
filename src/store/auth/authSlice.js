@@ -14,11 +14,19 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        login: (state, action) => {
-
+        login: (state, { payload }) => {
+            state.status = 'authenticated';
+            state.uid = payload.uid;
+            state.email = payload.email;
+            state.displayName = payload.displayName;
+            state.photoURL = payload.photoURL;
+            state.errorMessage = null;
         },
-        logout: (state, payload) => {
-
+        logout: (state, { payload }) => {
+            return {// Enfoque diferente, creo una copia explicita y redux-toolkit se encarga de hacer el merge o reemplazar el estado
+                ...initialState,
+                errorMessage: payload.errorMessage
+            };
         },
         checkingCredentials: (state) => {
             state.status = 'checking';

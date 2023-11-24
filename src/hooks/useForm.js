@@ -1,22 +1,30 @@
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
-export const useForm = (initialForm = {}) => {
+export const useForm = (initialForm = {}, formValidations = {}) => {
 
-    const [formState, setFormState] = useState(initialForm)
+    const [formState, setFormState] = useState(initialForm);
+    const [formValidation, setFormValidation] = useState({})
 
-    const onInputChange = ({ target }) => {
-        console.log('Esta cambiando el state')
-        const { name, value } = target;
-        setFormState({
-            ...formState,
-            [name]: value
-        });
-
+    const onFormValidation = () => {
+        const formCkeckedValues = {}
+        for (let key in formValidations) {
+            const [fn, errorMessage] = formValidations[key];
+            formCkeckedValues[`${key}Valid`] = fn(formState[key]) ? null : errorMessage;
+        }
+        setFormValidation(formCkeckedValues);
+        return formCkeckedValues;
     }
 
-    const onResetForm = () => {
-        setFormState(initialForm)
+    const isFormValid = () => {
+        const formValidation = onFormValidation();// obtengo el estado de la validacion antes de que se vuelva a renderizar, de lo contrario siempre estaria un paso atras
+        return Object.values(formValidation).every(v => v === null);
     }
+
+
+    const onInputChange = ({ target: { name, value } }) =>
+        setFormState({ ...formState, [name]: value });
+
+    const onResetForm = () => setFormState(initialForm);
 
     return {
         ...formState,
@@ -24,5 +32,8 @@ export const useForm = (initialForm = {}) => {
         setFormState,
         onInputChange,
         onResetForm,
+
+        ...formValidation,
+        isFormValid,
     }
 }
