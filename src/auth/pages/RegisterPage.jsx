@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from "../layout/AuthLayout"
-import { useForm } from "../../hooks";
+import { useErrorMessage, useForm } from "../../hooks";
 
 import { startCreatingUserWithEmailAndPassword } from "../../store/auth";
 
@@ -27,18 +26,10 @@ export const RegisterPage = () => {
     const dispath = useDispatch();
 
     const { status, errorMessage } = useSelector(state => state.auth)
-    const [showMessageError, setShowMessageError] = useState(false);
 
     const isAuthenticating = status === 'loading';
 
-    useEffect(() => {
-        if (!!errorMessage) {
-            setShowMessageError(true);
-            setTimeout(() => {
-                setShowMessageError(false);
-            }, 3000);
-        }
-    }, [errorMessage]);
+    const showMessageError = useErrorMessage(errorMessage);
 
     const {
         formState, displayName, email, password, onInputChange,

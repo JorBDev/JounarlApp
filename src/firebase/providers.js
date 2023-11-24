@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import { FirebaseAuth } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
@@ -22,6 +22,30 @@ export const singInWithGoogle = async () => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
+
+        return {
+            ok: false,
+            errorMessage
+        }
+    }
+}
+
+export const singInWithEmail = async ({ email, password }) => {
+
+    try {
+
+        const resp = await signInWithEmailAndPassword(FirebaseAuth, email, password)
+
+        const { displayName, photoURL, uid } = resp.user;
+
+        return {
+            ok: true,
+            displayName, email, photoURL, uid
+        }
+
+    } catch (error) {
+        // Handle Errors here.
+        const errorMessage = error.message == "Firebase: Error (auth/invalid-login-credentials)." ? "El correo o contraseña es incorrecta" : error.message;
 
         return {
             ok: false,
