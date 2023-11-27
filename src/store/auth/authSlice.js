@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    status: 'not-authenticated', // checking, not-authenticated, authenticated
+    status: 'checking', // checking, not-authenticated, authenticated
     uid: null,
     email: null,
     displayName: null,
@@ -22,10 +22,11 @@ export const authSlice = createSlice({
             state.photoURL = payload.photoURL;
             state.errorMessage = null;
         },
-        logout: (state, { payload }) => {
+        logout: (state, { payload = {} }) => {
             return {// Enfoque diferente, creo una copia explicita y redux-toolkit se encarga de hacer el merge o reemplazar el estado
                 ...initialState,
-                errorMessage: payload.errorMessage
+                status: 'not-authenticated',
+                errorMessage: payload?.errorMessage
             };
         },
         checkingCredentials: (state) => {

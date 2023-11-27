@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { FirebaseAuth } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
@@ -70,8 +70,17 @@ export const registerUserWithEmailPassword = async ({ email, password, displayNa
         }
 
     } catch (error) {
-        // console.log(error)
         const errorMessage = error.message == "Firebase: Error (auth/email-already-in-use)." ? "El correo ya esta en uso" : error.message;
         return { ok: false, errorMessage }
+    }
+}
+
+export const logoutFirebase = async () => {
+    try {
+        await signOut(FirebaseAuth);
+        return { ok: true }
+    } catch (error) {
+        console.log(error);
+        return { ok: false, errorMessage: error.message }
     }
 }
