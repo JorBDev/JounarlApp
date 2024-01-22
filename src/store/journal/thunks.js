@@ -38,3 +38,9 @@ export const startLoadingNotes = () => {
         dispatch(setNotes(notes));
     }
 }
+
+export const activateNote = (note) => {
+    return async (dispatch) => {
+        dispatch(setActiveNote(note))
+    }
+}

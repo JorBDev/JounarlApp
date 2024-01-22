@@ -1,8 +1,15 @@
 import { SaveOutlined } from "@mui/icons-material"
 import { Button, Grid, TextField, Typography } from "@mui/material"
 import { ImageGallery } from "../components"
+import { useSelector } from "react-redux"
+import moment from "moment"
 
 export const NoteView = () => {
+
+    const { active: note } = useSelector(state => state.journal);
+    const { title, body, date } = note;
+    const fecha = moment(date).format('LLL');
+
     return (
         <Grid
             className='animate__animated animate__fadeIn animate__faster'
@@ -13,7 +20,7 @@ export const NoteView = () => {
             sx={{ mb: 1 }}
         >
             <Grid item>
-                <Typography fontSize={39} fontWeight='light'>28 de agosto, 2023</Typography>
+                <Typography fontSize={39} fontWeight='light'>{fecha}</Typography>
             </Grid>
 
             <Grid item>
@@ -29,7 +36,7 @@ export const NoteView = () => {
                     variant="filled"
                     fullWidth
                     placeholder="Ingrese un título"
-                    label="Título"
+                    label={title}
                     sx={{ border: 'none', mb: 1 }}
                 />
 
@@ -39,6 +46,7 @@ export const NoteView = () => {
                     fullWidth
                     multiline
                     placeholder="¿Qué pasó hoy?"
+                    label={body}
                     minRows={5}
                 />
             </Grid>
