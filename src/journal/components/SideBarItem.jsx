@@ -3,11 +3,11 @@ import { TurnedInNot } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
 import { activateNote } from "../../store/journal/thunks";
 
-export const SideBarItem = ({ note }) => {
-    const { title, body, id } = note;
+export const SideBarItem = ({ title = '', body, date, id, imageUrls = [] }) => {
+
     const dispath = useDispatch();
     const viewNote = () => {
-        dispath(activateNote(note));
+        dispath(activateNote({ title, body, id, date, imageUrls }));
     }
 
     return (

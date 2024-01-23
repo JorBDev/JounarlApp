@@ -2,8 +2,13 @@ import { useEffect, useMemo, useState } from "react"
 
 export const useForm = (initialForm = {}, formValidations = {}) => {
 
+
     const [formState, setFormState] = useState(initialForm);
     const [formValidation, setFormValidation] = useState({})
+
+    useEffect(() => {
+        setFormState(initialForm);
+    }, [initialForm])
 
     const onFormValidation = () => {
         const formCkeckedValues = {}
@@ -21,8 +26,10 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     }
 
 
-    const onInputChange = ({ target: { name, value } }) =>
+    const onInputChange = ({ target: { name, value } }) => {
+        console.log(name, value)
         setFormState({ ...formState, [name]: value });
+    }
 
     const onResetForm = () => setFormState(initialForm);
 

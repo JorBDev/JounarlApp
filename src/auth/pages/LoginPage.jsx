@@ -8,6 +8,10 @@ import { AuthLayout } from '../layout/AuthLayout';
 import { useErrorMessage, useForm } from '../../hooks';
 import { startEmailSignIn, startGoogleSignIn } from '../../store/auth';
 
+const formData = {
+    email: '',
+    password: ''
+}
 
 export const LoginPage = () => {
 
@@ -19,10 +23,7 @@ export const LoginPage = () => {
 
     const showMessageError = useErrorMessage(errorMessage);
 
-    const { email, password, onInputChange } = useForm({
-        email: '',
-        password: ''
-    });
+    const { email, password, onInputChange } = useForm(formData);
 
 
     const onSubmit = (event) => {
