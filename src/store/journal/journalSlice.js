@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     isSaving: false,
-    messageSabed: '',
+    messageSaved: '',
     notes: [],
     active: null,
     // active: {
@@ -27,23 +27,25 @@ export const journalSlice = createSlice({
         },
         setActiveNote: (state, action) => {
             state.active = action.payload;
+            state.messageSaved = '';
         },
         setNotes: (state, action) => {
             state.notes = action.payload;
         },
         setSaving: (state) => {
             state.isSaving = true;
-            // TODO: mensaje de error...
+            state.messageSaved = '';
         },
-        updateNote: (state, action) => {
+        updateNote: (state, action) => {// payload: note
             state.isSaving = false;
             state.notes = state.notes.map(note => {
-                if (note.id == action.payload.id) {
-                    console.log('este es:', note, action.payload)
+                if (note.id === action.payload.id) {
                     note = action.payload;
                 }
                 return note;
             })
+
+            state.messageSaved = `${action.payload.title}, actualizada correctamente`
         },
         deleteNodeById: (state, action) => {
 
