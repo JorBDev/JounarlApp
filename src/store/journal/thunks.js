@@ -1,7 +1,7 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
 import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./";
-import { loadNotes } from "../../helpers";
+import { fileUpload, loadNotes } from "../../helpers";
 
 export const startNewNote = () => {
     return async (dispatch, getState) => {
@@ -60,5 +60,15 @@ export const startSaveNote = () => {
         await setDoc(docRef, noteToFireStore, { merge: true }); // El merge true es para que no se borre el resto de propiedades que no se estan actualizando
 
         dispatch(updateNote(note))
+    }
+}
+
+export const startUploadingFiles = (files = []) => {
+    return async (dispatch) => {
+        dispatch(setSaving());
+
+        for (let i = 0; i < files.length; i++) {
+            await fileUpload(files[i]);
+        }
     }
 }
