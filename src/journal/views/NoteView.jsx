@@ -17,7 +17,7 @@ export const NoteView = () => {
     const dispath = useDispatch();
     const { active: note, messageSaved, isSaving } = useSelector(state => state.journal);
 
-    const { body, title, date, onInputChange, formState } = useForm(note);
+    const { body, title, date, imageUrls, onInputChange, formState } = useForm(note);
 
     const fileInputRef = useRef();
 
@@ -115,7 +115,7 @@ export const NoteView = () => {
                 />
             </Grid>
 
-            <ImageGallery />
+            <ImageGallery images={imageUrls} />
         </Grid>
     )
 }
