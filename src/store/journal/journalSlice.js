@@ -60,6 +60,11 @@ export const journalSlice = createSlice({
 
             state.notes = state.notes.filter(note => note.id !== payload.id);
         },
+        clearAllNotes: (state) => {
+            state.isSaving = false;
+            state.notes = [];
+            state.active = null;
+        }
     }
 });
 
@@ -73,4 +78,5 @@ export const {
     setPhotosToActiveNote,
     setSaving,
     updateNote,
+    clearAllNotes,
 } = journalSlice.actions;

@@ -1,12 +1,20 @@
-import { useSelector } from "react-redux"
-import { Box, Divider, Drawer, List, Toolbar, Typography } from "@mui/material"
+import { useDispatch, useSelector } from "react-redux"
+import { Box, Button, Divider, Drawer, Grid, List, Toolbar, Typography } from "@mui/material"
 import { SideBarItem } from "./";
+import { DeleteOutline } from "@mui/icons-material";
+import { startDeletingAllNotes } from "../../store/journal";
 
 
 export const SideBar = ({ drawerWidth = 240 }) => {
 
+    const dispatch = useDispatch();
+
     const { displayName } = useSelector(state => state.auth);
     const { notes } = useSelector(state => state.journal);
+
+    const onDelete = () => {
+        dispatch(startDeletingAllNotes());
+    }
 
     return (
         <Box
@@ -35,6 +43,20 @@ export const SideBar = ({ drawerWidth = 240 }) => {
                         ))
                     }
                 </List>
+
+                {
+                    (notes.length > 0) ?
+                        <Grid container justifyContent='center'>
+                            <Button
+                                onClick={onDelete}
+                                sx={{ mt: 2 }}
+                                color='error'
+                            >
+                                <DeleteOutline />
+                                Borrar todas las notas
+                            </Button>
+                        </Grid> : ''
+                }
 
             </Drawer>
 

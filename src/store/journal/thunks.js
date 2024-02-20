@@ -1,6 +1,6 @@
-import { collection, doc, setDoc, deleteDoc } from "firebase/firestore/lite";
+import { collection, doc, setDoc, deleteDoc, writeBatch } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
-import { addNewEmptyNote, deleteNoteById, savingNewNote, setActiveNote, setNotes, setPhotosToActiveNote, setSaving, updateNote } from "./";
+import { addNewEmptyNote, clearAllNotes, deleteNoteById, savingNewNote, setActiveNote, setNotes, setPhotosToActiveNote, setSaving, updateNote } from "./";
 import { fileUpload, loadNotes } from "../../helpers";
 
 export const startNewNote = () => {
@@ -72,8 +72,7 @@ export const startUploadingFiles = (files = []) => {
             fileUploadPromises.push(fileUpload(file));
         }
 
-        const photosUrls = await Promise.all(fileUploadPromises); //
-
+        const photosUrls = await Promise.all(fileUploadPromises);
         dispatch(setPhotosToActiveNote(photosUrls));
 
         // Se dispara en secuencia y no simultaneamente:
@@ -93,6 +92,31 @@ export const startDeletingNote = () => {
         await deleteDoc(docRef);
 
         dispatch(deleteNoteById(note.id));
+
+    }
+}
+
+export const startDeletingAllNotes = () => {
+    return async (dispatch, getState) => {
+
+        //Obtenemos el id del usuario y el arreglo de las notas del store
+        const { uid } = getState().auth;
+        const { notes } = getState().journal;
+
+        //Usamos la escritura por lotes que provee Firestore
+        const batch = writeBatch(FirebaseDB);
+
+        //Recorremos el arreglo de las notas y mandamos la referencia a los documentos que
+        //queremos borrar mandando el id de cada uno
+        notes.forEach(note => {
+            batch.delete(doc(FirebaseDB, `${uid}/journal/notes/${note.id}`));
+        });
+
+        //Al final hacemos el commit de la escritura por lotes
+        await batch.commit();
+
+        //Borramos el contenido del arreglo de notas
+        dispatch(clearAllNotes()); //state.notes = []; esto en el reducer respectivo
 
     }
 }
