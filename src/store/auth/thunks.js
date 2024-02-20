@@ -46,6 +46,9 @@ export const startCreatingUserWithEmailAndPassword = ({ email, password, display
 export const startLogout = () => {
     return async (dispatch) => {
         const result = await logoutFirebase();
-        if (result.ok) return dispatch(logout(result));
+        if (result.ok) {
+            // Se puede llamar el dispatch desde acá para limpiar las notas activas y demas información del usuario.
+            return dispatch(logout(result));
+        }
     }
 }

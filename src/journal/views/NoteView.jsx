@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { SaveOutlined, UploadOutlined } from "@mui/icons-material"
+import { DeleteOutline, SaveOutlined, UploadOutlined } from "@mui/icons-material"
 import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import Swal from "sweetalert2"
 import 'sweetalert2/dist/sweetalert2.css';
@@ -9,12 +9,12 @@ import 'sweetalert2/dist/sweetalert2.css';
 import { ImageGallery } from "../components"
 import moment from "moment"
 import { useForm } from "../../hooks/useForm"
-import { activateNote, startUploadingFiles } from "../../store/journal"
+import { activateNote, startDeletingNote, startUploadingFiles } from "../../store/journal"
 import { startSaveNote } from "../../store/journal/thunks"
 
 export const NoteView = () => {
 
-    const dispath = useDispatch();
+    const dispatch = useDispatch();
     const { active: note, messageSaved, isSaving } = useSelector(state => state.journal);
 
     const { body, title, date, imageUrls, onInputChange, formState } = useForm(note);
@@ -22,7 +22,7 @@ export const NoteView = () => {
     const fileInputRef = useRef();
 
     useEffect(() => {
-        dispath(activateNote(formState))
+        dispatch(activateNote(formState))
     }, [formState])
 
     const dateString = useMemo(() => {
@@ -33,18 +33,39 @@ export const NoteView = () => {
         if (messageSaved.length > 0) {
             Swal.fire('Nota actualizada', messageSaved, 'success')
         }
-
     }, [messageSaved])
 
-
     const onSaveNote = () => {
-        dispath(startSaveNote())
+        dispatch(startSaveNote())
     }
 
     const onFileInputChange = ({ target }) => {
         if (target.files === 0) return;
 
-        dispath(startUploadingFiles(target.files));
+        dispatch(startUploadingFiles(target.files));
+    }
+
+    const onDelete = () => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No se podrá revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                dispatch(startDeletingNote());
+
+                Swal.fire(
+                    'Eliminado',
+                    'Tu archivo ha sido eliminado',
+                    'success'
+                )
+            }
+        })
     }
 
     return (
@@ -113,6 +134,17 @@ export const NoteView = () => {
                     value={body}
                     onChange={onInputChange}
                 />
+            </Grid>
+
+            <Grid container justifyContent='end'>
+                <Button
+                    onClick={onDelete}
+                    sx={{ mt: 2 }}
+                    color='error'
+                >
+                    <DeleteOutline />
+                    Borrar
+                </Button>
             </Grid>
 
             <ImageGallery images={imageUrls} />

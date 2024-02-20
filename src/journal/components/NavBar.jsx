@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux"
 import { LogoutOutlined, MenuOutlined } from "@mui/icons-material"
 import { AppBar, Grid, IconButton, Toolbar, Typography } from "@mui/material"
 import { startLogout } from "../../store/auth"
+import { clearNotesLogout } from "../../store/journal/journalSlice"
 
 export const NavBar = ({ drawerWidth = 240 }) => {
 
@@ -9,6 +10,7 @@ export const NavBar = ({ drawerWidth = 240 }) => {
 
     const onLogout = () => {
         dispath(startLogout());
+        dispath(clearNotesLogout());
     }
 
     return (

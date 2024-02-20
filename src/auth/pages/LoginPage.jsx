@@ -25,7 +25,6 @@ export const LoginPage = () => {
 
     const { email, password, onInputChange } = useForm(formData);
 
-
     const onSubmit = (event) => {
         event.preventDefault();
 
