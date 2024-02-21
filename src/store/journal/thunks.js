@@ -14,6 +14,7 @@ export const startNewNote = () => {
             title: '',
             body: '',
             date: new Date().getTime(),
+            imageUrls: [],
         }
 
         const newDoc = doc(collection(FirebaseDB, `${uid}/journal/notes`));
@@ -71,7 +72,6 @@ export const startUploadingFiles = (files = []) => {
         for (const file of files) {
             fileUploadPromises.push(fileUpload(file));
         }
-
         const photosUrls = await Promise.all(fileUploadPromises);
         dispatch(setPhotosToActiveNote(photosUrls));
 
